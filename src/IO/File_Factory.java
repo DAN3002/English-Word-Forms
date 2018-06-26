@@ -6,25 +6,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 public class File_Factory 
 {
-    public static ArrayList<ArrayList<String>> Input(String path)throws FileNotFoundException, IOException, ClassNotFoundException
+    public static Object Input(String path)throws FileNotFoundException, IOException, ClassNotFoundException
     {
         FileInputStream fi = new FileInputStream(path);
         ObjectInputStream input = new ObjectInputStream(fi);
-        ArrayList<ArrayList<String>> arr = (ArrayList<ArrayList<String>>) input.readObject();
+        Object ob = input.readObject();
         input.close();
         fi.close();     
-        return arr;
+        return ob;
     }
     
-    public static void Output(ArrayList<ArrayList<String>> arr, String path) throws FileNotFoundException, IOException
+    public static void Output(Object ob, String path) throws FileNotFoundException, IOException
     {
         FileOutputStream fo = new FileOutputStream(path);
         ObjectOutputStream oos = new ObjectOutputStream(fo);
-        oos.writeObject(arr);
+        oos.writeObject(ob);
         oos.close();
         fo.close();
     }
