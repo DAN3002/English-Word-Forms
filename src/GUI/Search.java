@@ -3,6 +3,8 @@ package GUI;
 import IO.File_Factory;
 import Model.Auto_Complete;
 import Model.Double_ArrayList;
+import Model.TTS.TTS;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -16,11 +18,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class Search extends javax.swing.JFrame {
 // Var
     private Double_ArrayList list;
+    private static TTS tts;
     
     public Search() throws FontFormatException, IOException, FileNotFoundException, ClassNotFoundException 
     {
@@ -36,7 +41,7 @@ public class Search extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel()
         {
             // Set Backgound
-            Image image = Toolkit.getDefaultToolkit().createImage("Data\\Image\\Background_Search.png");
+            final Image image = Toolkit.getDefaultToolkit().createImage("Data\\Image\\Background_Search.png");
             @Override
             public void paintComponent(Graphics g)
             {
@@ -49,15 +54,19 @@ public class Search extends javax.swing.JFrame {
         }
         ;
         Text = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        ScrollPane = new javax.swing.JScrollPane();
         Table = new javax.swing.JTable();
         Input = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
         Text.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Text.setText("Search Word Form");
+
+        ScrollPane.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -68,7 +77,7 @@ public class Search extends javax.swing.JFrame {
             }
         ));
         Table.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        jScrollPane1.setViewportView(Table);
+        ScrollPane.setViewportView(Table);
 
         Input.setEditable(true);
         Input.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -85,8 +94,8 @@ public class Search extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(52, 52, 52)
                 .addComponent(Input, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
         );
         jPanel1Layout.setVerticalGroup(
@@ -100,8 +109,8 @@ public class Search extends javax.swing.JFrame {
                         .addComponent(Input, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(50, Short.MAX_VALUE))
+                        .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -159,7 +168,7 @@ public class Search extends javax.swing.JFrame {
     }
     
     public void Set_GUI() throws FileNotFoundException, FontFormatException, IOException
-    {
+    {                
         // Set Font, Icon
         Font font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("Data\\Font\\ShowcaseSans.ttf"))).deriveFont(Font.PLAIN, 60);
         Text.setFont(font);
@@ -186,17 +195,31 @@ public class Search extends javax.swing.JFrame {
         // Set Size
         Table.setRowHeight(70); 
         
+        // Set Jtable transparent 
+        Table.setOpaque(false);
+        DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)Table.getDefaultRenderer(Object.class);
+        renderer.setOpaque(false);        
+        
+        ScrollPane.setOpaque(false);
+        ScrollPane.getViewport().setOpaque(false);  
+        
+
+                
+
+        
     }
     
     public void Get_Data() throws IOException, FileNotFoundException, ClassNotFoundException
     {
         list = new Double_ArrayList((ArrayList<ArrayList<String>>) File_Factory.Input("Data\\Inf\\List.txt")); 
+        
+        tts = new TTS("kevin16");
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> Input;
+    private javax.swing.JScrollPane ScrollPane;
     private javax.swing.JTable Table;
     private javax.swing.JLabel Text;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
