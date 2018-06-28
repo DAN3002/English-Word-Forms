@@ -1,4 +1,4 @@
-package Model.TTS;
+package Model;
 
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
@@ -21,8 +21,8 @@ public class TTS
     {
         // Set speed for voice
         voice.setRate(speed);
-        System.out.println(voice.getRate());
                 
         voice.speak(text);                
+        
     }
 }
