@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Double_ArrayList
 {
-    private ArrayList<ArrayList<String>> arr;
+    private  ArrayList<ArrayList<String>> arr;
     
     public Double_ArrayList(ArrayList<ArrayList<String>> input)
     {
@@ -26,6 +26,7 @@ public class Double_ArrayList
         return this.arr.get(column).get(row);
     }
     
+    
     public Integer Total_Size()
     {
         return this.arr.size();
@@ -44,13 +45,13 @@ public class Double_ArrayList
             {
                 System.out.println(Get(i, j));
             }
-            System.out.println();
+            System.out.println("=");
         }
     }
     
     public int IndexOf(String str)
     {
-        int output = 6;       
+        int output = -1;       
         for(int i = 0; i < Total_Size(); i++)
         {
             for(int j = 0; j < Column_Size(i); j++)

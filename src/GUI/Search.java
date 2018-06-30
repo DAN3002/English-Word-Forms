@@ -286,7 +286,6 @@ public class Search extends javax.swing.JFrame {
     public void Get_Data() throws IOException, FileNotFoundException, ClassNotFoundException
     {
         list = new Double_ArrayList((ArrayList<ArrayList<String>>) File_Factory.Input("Data\\Inf\\List.txt")); 
-        
         tts = new TTS("kevin16");
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

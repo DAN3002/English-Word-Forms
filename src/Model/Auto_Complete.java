@@ -29,8 +29,7 @@ public class Auto_Complete extends KeyAdapter
         this.list = list;
         this.jcombo = jcombo;
         this.Table = Table;
-        text_field = ((JTextField) jcombo.getEditor().getEditorComponent());
-        
+        text_field = ((JTextField) jcombo.getEditor().getEditorComponent());        
     }
     
     
@@ -43,7 +42,6 @@ public class Auto_Complete extends KeyAdapter
     
     private ComboBoxModel<String> Get_Suggestion(String text)
     {        
-        String Lower = (text.charAt(0) + "").toLowerCase() + text.substring(1);
         String Upper = (text.charAt(0) + "").toUpperCase()+ text.substring(1);
         
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -53,7 +51,7 @@ public class Auto_Complete extends KeyAdapter
             for(int j = 0; j < list.Column_Size(i); j++)
             {
                 String[] cut = list.Get(i, j).split("-");
-                if(cut[0].startsWith(Lower) || cut[0].startsWith(Upper))
+                if(cut[0].startsWith(Upper))
                 {
                     list_checked.add(cut[0]);
                     model.addElement(cut[0]);
