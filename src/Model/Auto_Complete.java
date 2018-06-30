@@ -119,44 +119,18 @@ public class Auto_Complete extends KeyAdapter
         
     }
     
-    
-    // Load Data for Table
-    private Object[] load_ColumName()
-    {
-        Object[] ob = new Object[]{"Word","Type ","Meaning"};
-        return ob;
-    }
-    
-    private Object[][] load_RowData(int location) throws IOException
-    {
-        Object[][] ob = new Object[list.Column_Size(location)][3];
+    // Load Data for Table    
+    private void load_Table(int location) throws IOException, FontFormatException
+    {              
+        DefaultTableModel data_Model = (DefaultTableModel) Table.getModel();
+        data_Model.setRowCount(0); // Remove all Row
+        
+        // Add Row
         for(int i = 0; i < list.Column_Size(location); i++)
         {
-            String[] cut = list.Get(location, i).split("-");
-            ob[i][0] = cut [0];
-            ob[i][1] = cut [1];
-            ob[i][2] = cut [2];
+            data_Model.addRow(list.Get(location, i).split("-"));
         }
-        return ob;
-    }
-    
-    private void load_Table(int location) throws IOException, FontFormatException
-    {
-        TableModel dataModel = new DefaultTableModel(load_RowData(location), load_ColumName())
-        { 
-            @Override
-            public boolean isCellEditable(int row, int column) 
-            {
-                return false; 
-            }                        
-        };         
-        Table.setModel(dataModel);
-        // Set Size
-        Table.getColumnModel().getColumn(0).setPreferredWidth(100);
-        Table.getColumnModel().getColumn(1).setPreferredWidth(10);
-        Table.getColumnModel().getColumn(2).setMinWidth(300);
-//----------------------------------------------------------------------------//         
-                     
+        Table.setModel(data_Model);
     }      
         
  
