@@ -245,6 +245,10 @@ public class Search extends javax.swing.JFrame {
         Font font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("Data\\Font\\ShowcaseSans.ttf"))).deriveFont(Font.PLAIN, 60);
         Text.setFont(font);
         
+        Audio.setIcon(new ImageIcon("Data\\Icon\\Audio.png"));
+        Star.setIcon(new ImageIcon("Data\\Icon\\Star.png"));
+        Home.setIcon(new ImageIcon("Data\\Icon\\Home.png"));   
+        
         // Set RequestFocus
         Input.setRequestFocusEnabled(true);
         
@@ -252,8 +256,7 @@ public class Search extends javax.swing.JFrame {
          JTextField TextField = (JTextField) Input.getEditor().getEditorComponent();
          TextField.addKeyListener(new Auto_Complete(list, Input, Table));
          
-        // SetTable
-        
+        // SetTable        
         // Set Model
         DefaultTableModel dataModel = new DefaultTableModel()
         { 
@@ -297,12 +300,7 @@ public class Search extends javax.swing.JFrame {
             
         // History
         jScrollPane_History.setOpaque(false);
-        jScrollPane_History.getViewport().setOpaque(false);  
-        
-        // Set Icon
-        Audio.setIcon(new ImageIcon("Data\\Icon\\Audio.png"));
-        Star.setIcon(new ImageIcon("Data\\Icon\\Star.png"));
-        Home.setIcon(new ImageIcon("Data\\Icon\\Home.png"));                        
+        jScrollPane_History.getViewport().setOpaque(false);                               
         
         // Add Hint
         Audio.addMouseListener(new Hint(Menu, "Play Sound", -8));

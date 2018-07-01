@@ -5,16 +5,13 @@ import java.awt.FontFormatException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 public class Auto_Complete extends KeyAdapter
 {
@@ -22,7 +19,6 @@ public class Auto_Complete extends KeyAdapter
     private JComboBox<String> jcombo;
     private JTable Table;
     private JTextField text_field;
-    private ArrayList<String> list_checked = new ArrayList<>();
 
     public Auto_Complete(Double_ArrayList list, JComboBox<String> jcombo, JTable Table) 
     {
@@ -30,37 +26,35 @@ public class Auto_Complete extends KeyAdapter
         this.jcombo = jcombo;
         this.Table = Table;
         text_field = ((JTextField) jcombo.getEditor().getEditorComponent());        
-    }
-    
+    }    
     
     // Suggestion
-    private void Set_Suggestion(ComboBoxModel<String> model, String text)    
+    private void Set_Suggestion(String text)    
     {
-        jcombo.setModel(model);
-        text_field.setText(text);
-    }
-    
-    private ComboBoxModel<String> Get_Suggestion(String text)
-    {        
-        String Upper = (text.charAt(0) + "").toUpperCase()+ text.substring(1);
+        String Upper = (text.charAt(0) + "").toUpperCase()+ text.substring(1);        
+        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) jcombo.getModel();
         
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        list_checked.removeAll(list_checked);
+        model.removeAllElements();
+        model.addElement(text);                
+        
         for(int i = 0; i < list.Total_Size(); i ++)
         {
             for(int j = 0; j < list.Column_Size(i); j++)
             {
                 String[] cut = list.Get(i, j).split("-");
+                
                 if(cut[0].startsWith(Upper))
                 {
-                    list_checked.add(cut[0]);
                     model.addElement(cut[0]);
                 }
             }
         }
-        return model;
-    }
-    
+        
+        if(jcombo.getItemCount() == 1)
+        {
+            jcombo.hidePopup();
+        } else jcombo.showPopup();
+    }    
     
     // Key Event
     @Override 
@@ -70,52 +64,37 @@ public class Auto_Complete extends KeyAdapter
         {
             @Override public void run() 
             {
-                String text = ((JTextField) e.getComponent()).getText();
-                if(!text.isEmpty())
+                if(e.getKeyChar()!= KeyEvent.VK_ENTER)
                 {
-                    ComboBoxModel<String> model = Get_Suggestion(text);
-                    if(model.getSize() != 0)
+                    String text = text_field.getText();
+                    
+                    if(!text.isEmpty())
                     {
-                        Set_Suggestion(model, text_field.getText());
-                        jcombo.showPopup();
-                    } else jcombo.hidePopup();
-
-                } else jcombo.hidePopup();
+                        Set_Suggestion(text);
+                    } else jcombo.hidePopup();                    
+                }
+                else
+                {
+                    try {
+                        Key_Enter();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Auto_Complete.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (FontFormatException ex) {
+                        Logger.getLogger(Auto_Complete.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         });
-    } 
-    
-    @Override 
-    public void keyPressed(final KeyEvent e) 
-    {
-        switch(e.getKeyCode())
-        {
-            case KeyEvent.VK_ENTER :
-            {
-            try {
-                Key_Enter();
-            } catch (IOException ex) {
-                Logger.getLogger(Auto_Complete.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (FontFormatException ex) {
-                Logger.getLogger(Auto_Complete.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            }
-        }
-    }
-    
+    }         
     
     // KeyEvent_Void
     private void Key_Enter() throws IOException, FontFormatException
     {
-        if(list_checked.contains(text_field.getText()))
+        if(jcombo.getItemCount() > 1)
         {
-            load_Table(list.IndexOf(text_field.getText()));        
-        }
-        else
-        {
-            Table.setModel(new DefaultTableModel());
-            jcombo.hidePopup();
-        }
+            load_Table(list.IndexOf(text_field.getText()));                 
+        }        
+        jcombo.hidePopup();
         
     }
     
@@ -130,8 +109,5 @@ public class Auto_Complete extends KeyAdapter
         {
             data_Model.addRow(list.Get(location, i).split("-"));
         }
-        Table.setModel(data_Model);
-    }      
-        
- 
+    }              
 }
