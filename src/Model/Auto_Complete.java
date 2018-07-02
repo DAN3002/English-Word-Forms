@@ -1,5 +1,6 @@
 package Model;
 
+import GUI.Search;
 import java.awt.EventQueue;
 import java.awt.FontFormatException;
 import java.awt.event.KeyAdapter;
@@ -12,6 +13,8 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import static GUI.Search.list_History;
+import IO.File_Factory;
 
 public class Auto_Complete extends KeyAdapter
 {
@@ -71,7 +74,12 @@ public class Auto_Complete extends KeyAdapter
                     if(!text.isEmpty())
                     {
                         Set_Suggestion(text);
-                    } else jcombo.hidePopup();                    
+                    } 
+                    else
+                    { 
+                        jcombo.hidePopup();
+                        ((DefaultComboBoxModel) jcombo.getModel()).removeAllElements();
+                    }
                 }
                 else
                 {
@@ -92,10 +100,10 @@ public class Auto_Complete extends KeyAdapter
     {
         if(jcombo.getItemCount() > 1)
         {
-            load_Table(list.IndexOf(text_field.getText()));                 
+            load_Table(list.IndexOf(text_field.getText()));  
+            add_History(text_field.getText());
         }        
-        jcombo.hidePopup();
-        
+        jcombo.hidePopup();        
     }
     
     // Load Data for Table    
@@ -109,5 +117,24 @@ public class Auto_Complete extends KeyAdapter
         {
             data_Model.addRow(list.Get(location, i).split("-"));
         }
-    }              
+    }    
+    
+    // History
+    private void add_History(String text) throws IOException
+    {
+        if(list_History.containsKey(text))
+        {
+            int time = list_History.get(text);
+            list_History.remove(text);
+            list_History.put(text, time + 1);
+        }
+        else
+        {
+            list_History.put(text, 1);
+        }
+        File_Factory.Output(list_History, "Data\\Inf\\History.txt");
+        Search.conection.set_History();
+    }
+    
+    
 }

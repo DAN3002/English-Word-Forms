@@ -4,7 +4,6 @@ import IO.File_Factory;
 import Model.Auto_Complete;
 import Model.Double_ArrayList;
 import Model.TTS;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
@@ -23,6 +22,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import IO.Swing_Factory;
 import Model.Hint;
 import Model.Star_MouseListenner;
+import java.util.LinkedHashMap;
 import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableModel;
 
@@ -32,12 +32,14 @@ public class Search extends javax.swing.JFrame {
     private static TTS tts;
     private static JPopupMenu Menu = new JPopupMenu();
     public  static int star_Status = 1;
+    public static LinkedHashMap<String, Integer> list_History;
+    public static Search conection;
     
     public Search() throws FontFormatException, IOException, FileNotFoundException, ClassNotFoundException 
     {
         initComponents();
-        Get_Data();
-        Set_GUI();        
+        Get_Data();        
+        Set_GUI();       
     }
 
     @SuppressWarnings("unchecked")
@@ -113,12 +115,14 @@ public class Search extends javax.swing.JFrame {
         jScrollPane_History.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jScrollPane_History.setOpaque(false);
 
+        History_Table.setBackground(new java.awt.Color(255, 255, 255));
+        History_Table.setFont(new java.awt.Font("Arial", 0, 17)); // NOI18N
         History_Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Word", "Time"
+
             }
         ));
         jScrollPane_History.setViewportView(History_Table);
@@ -219,7 +223,7 @@ public class Search extends javax.swing.JFrame {
         });
     }
 
-    public static void Set_LookAndFeel()
+    private static void Set_LookAndFeel()
     {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -239,7 +243,7 @@ public class Search extends javax.swing.JFrame {
         }        
     }
     
-    public void Set_GUI() throws FileNotFoundException, FontFormatException, IOException
+    private void Set_GUI() throws FileNotFoundException, FontFormatException, IOException
     {                
         // Set Font, Icon
         Font font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("Data\\Font\\ShowcaseSans.ttf"))).deriveFont(Font.PLAIN, 60);
@@ -247,10 +251,7 @@ public class Search extends javax.swing.JFrame {
         
         Audio.setIcon(new ImageIcon("Data\\Icon\\Audio.png"));
         Star.setIcon(new ImageIcon("Data\\Icon\\Star.png"));
-        Home.setIcon(new ImageIcon("Data\\Icon\\Home.png"));   
-        
-        // Set RequestFocus
-        Input.setRequestFocusEnabled(true);
+        Home.setIcon(new ImageIcon("Data\\Icon\\Home.png"));           
         
         // Add Listener
          JTextField TextField = (JTextField) Input.getEditor().getEditorComponent();
@@ -270,9 +271,7 @@ public class Search extends javax.swing.JFrame {
         dataModel.addColumn("Type");
         dataModel.addColumn("Meaning");
         Table.setModel(dataModel);
-        
-        // Set Gird
-        Table.setGridColor(Color.BLACK);
+       
         Table.setShowGrid(true);
         
         // Set Column size
@@ -299,8 +298,29 @@ public class Search extends javax.swing.JFrame {
         ScrollPane.getViewport().setOpaque(false);  
             
         // History
+        DefaultTableModel dataModel_History = new DefaultTableModel()
+        { 
+            @Override
+            public boolean isCellEditable(int row, int column) 
+            {
+                return false; 
+            }                        
+        };
+        dataModel_History.addColumn("Word");
+        dataModel_History.addColumn("Time");
+        // Disable
+        History_Table.getTableHeader().setReorderingAllowed(false);   
+                        
+        History_Table.setShowGrid(true);
+        History_Table.setRowHeight(27);
+
+        // Set Compoment transparent 
+        History_Table.setModel(dataModel_History);
         jScrollPane_History.setOpaque(false);
         jScrollPane_History.getViewport().setOpaque(false);                               
+        
+        // Set Data
+        set_History();
         
         // Add Hint
         Audio.addMouseListener(new Hint(Menu, "Play Sound", -8));
@@ -310,10 +330,30 @@ public class Search extends javax.swing.JFrame {
                
     }    
     
-    public void Get_Data() throws IOException, FileNotFoundException, ClassNotFoundException
+    private  void Get_Data() throws IOException, FileNotFoundException, ClassNotFoundException
     {
         list = new Double_ArrayList((ArrayList<ArrayList<String>>) File_Factory.Input("Data\\Inf\\List.txt")); 
+        list_History = (LinkedHashMap<String, Integer>) File_Factory.Input("Data\\Inf\\History.txt");
         tts = new TTS("kevin16");
+        
+        conection = this;        
+    }
+    
+    public void set_History()
+    {
+        // Set History Data
+        Object[] list = list_History.keySet().toArray();
+        DefaultTableModel data_Model = (DefaultTableModel) History_Table.getModel();
+        data_Model.setRowCount(0);
+        if(list.length > 0)
+        {
+            for(int i = list.length - 1; i >= 0; i--)
+            {
+                String word = list[i].toString();
+                String[] str = {word, list_History.get(word).toString()};                
+                data_Model.addRow(str);
+            }           
+        }        
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Audio;
