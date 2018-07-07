@@ -1,7 +1,7 @@
 package GUI;
 
 import IO.File_Factory;
-import Model.Auto_Complete;
+import Model.Key_Listener.Auto_Complete;
 import Model.Double_ArrayList;
 import Model.TTS;
 import java.awt.Font;
@@ -20,10 +20,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import IO.Swing_Factory;
-import Model.Hint;
-import Model.Star_MouseListenner;
+import Model.Mouse_Listenner.Hint;
+import Model.Mouse_Listenner.Input_MouseListenner;
+import Model.Mouse_Listenner.Star_MouseListenner;
+import Model.PopUp;
 import java.util.LinkedHashMap;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class Search extends javax.swing.JFrame {
@@ -38,6 +44,7 @@ public class Search extends javax.swing.JFrame {
     public Search() throws FontFormatException, IOException, FileNotFoundException, ClassNotFoundException 
     {
         initComponents();
+        Set_LookAndFeel();
         Get_Data();        
         Set_GUI();       
     }
@@ -194,9 +201,17 @@ public class Search extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void AudioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AudioMouseClicked
-        System.out.println(star_Status);
-        Object str = Table.getValueAt(Table.getSelectedRow(), 0);
-        tts.say(str.toString(), (float) 120.0);        
+        try 
+        {
+            Object str = Table.getValueAt(Table.getSelectedRow(), 0);
+            tts.say(str.toString(), (float) 120.0);              
+        } catch (Exception e) 
+        {
+            JLabel lable = new JLabel("Select word from table");            
+            lable.setFont(Text.getFont().deriveFont(Font.BOLD, 20.0f));
+            JOptionPane pop = new PopUp("Data\\Image\\Background_Search.png");
+            pop.showMessageDialog(this, lable, "Warning", JOptionPane.WARNING_MESSAGE);
+        }      
     }//GEN-LAST:event_AudioMouseClicked
 
     private void HomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HomeMouseClicked
@@ -256,6 +271,7 @@ public class Search extends javax.swing.JFrame {
         // Add Listener
          JTextField TextField = (JTextField) Input.getEditor().getEditorComponent();
          TextField.addKeyListener(new Auto_Complete(list, Input, Table));
+         TextField.addMouseListener(new Input_MouseListenner(TextField, History_Table));
          
         // SetTable        
         // Set Model
@@ -307,7 +323,7 @@ public class Search extends javax.swing.JFrame {
             }                        
         };
         dataModel_History.addColumn("Word");
-        dataModel_History.addColumn("Time");
+        dataModel_History.addColumn("Time(s)");
         // Disable
         History_Table.getTableHeader().setReorderingAllowed(false);   
                         
@@ -317,7 +333,9 @@ public class Search extends javax.swing.JFrame {
         // Set Compoment transparent 
         History_Table.setModel(dataModel_History);
         jScrollPane_History.setOpaque(false);
-        jScrollPane_History.getViewport().setOpaque(false);                               
+        jScrollPane_History.getViewport().setOpaque(false);    
+        
+        History_Table.getSelectionModel().addListSelectionListener(selsection_History);
         
         // Set Data
         set_History();
@@ -355,6 +373,40 @@ public class Search extends javax.swing.JFrame {
             }           
         }        
     }
+
+    public void load_Table(int location) throws IOException, FontFormatException
+    {              
+        DefaultTableModel data_Model = (DefaultTableModel) Table.getModel();
+        data_Model.setRowCount(0); // Remove all Row
+        
+        // Add Row
+        for(int i = 0; i < list.Column_Size(location); i++)
+        {
+            data_Model.addRow(list.Get(location, i).split("-"));
+        }
+    }       
+    
+    // Creat ListSelectionListener for History_Table
+    private ListSelectionListener selsection_History = new ListSelectionListener() 
+    {
+        @Override
+        public void valueChanged(ListSelectionEvent e) 
+        {
+            if(History_Table.getSelectedRow() >= 0)
+            {
+                String text = (String) History_Table.getValueAt(History_Table.getSelectedRow(), 0);
+                try {
+                    load_Table(list.IndexOf(text));
+                } catch (IOException ex) {
+                    Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (FontFormatException ex) {
+                    Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+                }                
+            }
+        }
+    };
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Audio;
     private javax.swing.JTable History_Table;

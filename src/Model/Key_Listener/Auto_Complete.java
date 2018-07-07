@@ -1,4 +1,4 @@
-package Model;
+package Model.Key_Listener;
 
 import GUI.Search;
 import java.awt.EventQueue;
@@ -12,9 +12,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import static GUI.Search.list_History;
 import IO.File_Factory;
+import Model.Double_ArrayList;
 
 public class Auto_Complete extends KeyAdapter
 {
@@ -100,25 +100,12 @@ public class Auto_Complete extends KeyAdapter
     {
         if(jcombo.getItemCount() > 1)
         {
-            load_Table(list.IndexOf(text_field.getText()));  
+            Search.conection.load_Table(list.IndexOf(text_field.getText()));  
             add_History(text_field.getText());
         }        
         jcombo.hidePopup();        
     }
-    
-    // Load Data for Table    
-    private void load_Table(int location) throws IOException, FontFormatException
-    {              
-        DefaultTableModel data_Model = (DefaultTableModel) Table.getModel();
-        data_Model.setRowCount(0); // Remove all Row
         
-        // Add Row
-        for(int i = 0; i < list.Column_Size(location); i++)
-        {
-            data_Model.addRow(list.Get(location, i).split("-"));
-        }
-    }    
-    
     // History
     private void add_History(String text) throws IOException
     {
