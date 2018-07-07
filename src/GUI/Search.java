@@ -23,7 +23,6 @@ import IO.Swing_Factory;
 import Model.Mouse_Listenner.Hint;
 import Model.Mouse_Listenner.Input_MouseListenner;
 import Model.Mouse_Listenner.Star_MouseListenner;
-import Model.PopUp;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -36,7 +35,7 @@ public class Search extends javax.swing.JFrame {
 // Var
     private Double_ArrayList list;
     private static TTS tts;
-    private static JPopupMenu Menu = new JPopupMenu();
+    public static JPopupMenu Menu = new JPopupMenu();
     public  static int star_Status = 1;
     public static LinkedHashMap<String, Integer> list_History;
     public static Search conection;
@@ -209,8 +208,7 @@ public class Search extends javax.swing.JFrame {
         {
             JLabel lable = new JLabel("Select word from table");            
             lable.setFont(Text.getFont().deriveFont(Font.BOLD, 20.0f));
-            JOptionPane pop = new PopUp("Data\\Image\\Background_Search.png");
-            pop.showMessageDialog(this, lable, "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, lable, "Warning", JOptionPane.WARNING_MESSAGE);
         }      
     }//GEN-LAST:event_AudioMouseClicked
 
@@ -272,6 +270,8 @@ public class Search extends javax.swing.JFrame {
          JTextField TextField = (JTextField) Input.getEditor().getEditorComponent();
          TextField.addKeyListener(new Auto_Complete(list, Input, Table));
          TextField.addMouseListener(new Input_MouseListenner(TextField, History_Table));
+         
+         Menu.setOpaque(false);
          
         // SetTable        
         // Set Model
@@ -341,10 +341,9 @@ public class Search extends javax.swing.JFrame {
         set_History();
         
         // Add Hint
-        Audio.addMouseListener(new Hint(Menu, "Play Sound", -8));
+        Audio.addMouseListener(new Hint(Menu, Audio, "Play Sound", -8, 100));
         Star.addMouseListener(new Star_MouseListenner(Menu, star_Status));
-        Home.addMouseListener(new Hint(Menu, "Back to home", -17));
-        Menu.setOpaque(false);
+        Home.addMouseListener(new Hint(Menu, Home, "Back to home", -17, 100));        
                
     }    
     
