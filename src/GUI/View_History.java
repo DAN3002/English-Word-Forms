@@ -2,6 +2,7 @@ package GUI;
 
 import IO.File_Factory;
 import IO.Swing_Factory;
+import Model.Key_Listener.History_Table;
 import Model.Mouse_Listenner.Hint;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,7 +29,7 @@ import javax.swing.table.JTableHeader;
 
 public class View_History extends javax.swing.JFrame 
 {
-    private LinkedHashMap<String, Integer> list;
+    public static LinkedHashMap<String, Integer> list;
     public static View_History conection;
     public static JPopupMenu Menu = new JPopupMenu();
 
@@ -150,8 +151,8 @@ public class View_History extends javax.swing.JFrame
     }//GEN-LAST:event_HomeMouseClicked
 
     private void HelpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HelpMouseClicked
-        JLabel lable = new JLabel("<html>\"Delete\" : Delete that Word\n" + "<br>" +"\"Ctrl + O\": Search that Word </html>");
-        lable.setFont(title.getFont().deriveFont(Font.BOLD, 18.0f));
+        JLabel lable = new JLabel("<html>\"Delete\": Delete that Word\n" + "<br>" +"\"Ctrl + O\": Search that Word </html>");
+        lable.setFont(title.getFont().deriveFont(Font.BOLD, 20.0f));
         JOptionPane.showMessageDialog(this, lable, "Help", JOptionPane.PLAIN_MESSAGE, null);
     }//GEN-LAST:event_HelpMouseClicked
 
@@ -242,6 +243,7 @@ public class View_History extends javax.swing.JFrame
         // Add Listenner
         Home.addMouseListener(new Hint(Menu, Home, "Back to home", -17, 100));
         Help.addMouseListener(new Hint(Menu, Help, "Help", 20, 100));
+        table.addKeyListener(new History_Table(table));
     }
     
     private void input_Data() throws IOException, FileNotFoundException, ClassNotFoundException
@@ -273,6 +275,6 @@ public class View_History extends javax.swing.JFrame
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
-    private javax.swing.JLabel title;
+    public javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables
 }

@@ -101,27 +101,13 @@ public class Auto_Complete extends KeyAdapter
         if(jcombo.getItemCount() > 1)
         {
             Search.conection.load_Table(list.IndexOf(text_field.getText()));  
-            add_History(text_field.getText());
+            Search.conection.add_History(text_field.getText());
         }        
         jcombo.hidePopup();        
     }
         
     // History
-    private void add_History(String text) throws IOException
-    {
-        if(list_History.containsKey(text))
-        {
-            int time = list_History.get(text);
-            list_History.remove(text);
-            list_History.put(text, time + 1);
-        }
-        else
-        {
-            list_History.put(text, 1);
-        }
-        File_Factory.Output(list_History, "Data\\Inf\\History.txt");
-        Search.conection.set_History();
-    }
+
     
     
 }

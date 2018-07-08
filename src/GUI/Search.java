@@ -33,7 +33,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class Search extends javax.swing.JFrame {
 // Var
-    private Double_ArrayList list;
+    public static Double_ArrayList list;
     private static TTS tts;
     public static JPopupMenu Menu = new JPopupMenu();
     public  static int star_Status = 1;
@@ -405,7 +405,21 @@ public class Search extends javax.swing.JFrame {
         }
     };
     
-    
+    public void add_History(String text) throws IOException
+    {
+        if(list_History.containsKey(text))
+        {
+            int time = list_History.get(text);
+            list_History.remove(text);
+            list_History.put(text, time + 1);
+        }
+        else
+        {
+            list_History.put(text, 1);
+        }
+        File_Factory.Output(list_History, "Data\\Inf\\History.txt");
+        set_History();
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Audio;
     private javax.swing.JTable History_Table;
