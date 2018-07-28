@@ -23,29 +23,35 @@ import IO.Swing_Factory;
 import Model.Mouse_Listenner.Hint;
 import Model.Mouse_Listenner.Input_MouseListenner;
 import Model.Mouse_Listenner.Star_MouseListenner;
-import java.util.LinkedHashMap;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import Model.PopUp_Factory;
 import javax.swing.JPopupMenu;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import static GUI.View_History.list_History;
+import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.border.LineBorder;
+import javax.swing.table.JTableHeader;
 
 public class Search extends javax.swing.JFrame {
 // Var
     public static Double_ArrayList list;
-    private static TTS tts;
+    private TTS tts;
+    
     public static JPopupMenu Menu = new JPopupMenu();
-    public  static int star_Status = 1;
-    public static LinkedHashMap<String, Integer> list_History;
+    public static int star_Status = 0;
+    public static int star_Location;
     public static Search conection;
+    public static ArrayList<Integer> list_Star;
+    public JTextField TextField;
     
     public Search() throws FontFormatException, IOException, FileNotFoundException, ClassNotFoundException 
     {
         initComponents();
-        Set_LookAndFeel();
+        set_LookAndFeel();
         Get_Data();        
-        Set_GUI();       
+        Set_GUI();   
     }
 
     @SuppressWarnings("unchecked")
@@ -76,7 +82,8 @@ public class Search extends javax.swing.JFrame {
         Star = new javax.swing.JLabel();
         jScrollPane_History = new javax.swing.JScrollPane();
         History_Table = new javax.swing.JTable();
-        Text_2 = new javax.swing.JLabel();
+        Shortcut = new javax.swing.JLabel();
+        Text_3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -133,67 +140,87 @@ public class Search extends javax.swing.JFrame {
         ));
         jScrollPane_History.setViewportView(History_Table);
 
-        Text_2.setFont(new java.awt.Font("Arial Black", 0, 24)); // NOI18N
-        Text_2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Text_2.setText("History");
+        Shortcut.setFont(new java.awt.Font("Arial Black", 0, 24)); // NOI18N
+        Shortcut.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Shortcut.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ShortcutMouseClicked(evt);
+            }
+        });
+
+        Text_3.setFont(new java.awt.Font("Arial Black", 0, 24)); // NOI18N
+        Text_3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Text_3.setText("History");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(Input, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(Audio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(Home, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
-                        .addComponent(Star, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane_History, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(Text_2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(33, 33, 33)
-                .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(246, 246, 246)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(121, 121, 121)
+                        .addComponent(Text_3, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(Shortcut, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Input, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(67, 67, 67))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jScrollPane_History, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(Audio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(48, 48, 48)
+                                .addComponent(Star, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                                .addComponent(Home, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(41, 41, 41)))))
+                .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Text, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(268, 268, 268))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(Text, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(Input, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
+                        .addGap(27, 27, 27)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Audio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Star, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Audio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Home, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(33, 33, 33)
-                        .addComponent(Text_2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(Shortcut, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Text_3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane_History, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -202,13 +229,18 @@ public class Search extends javax.swing.JFrame {
     private void AudioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AudioMouseClicked
         try 
         {
-            Object str = Table.getValueAt(Table.getSelectedRow(), 0);
-            tts.say(str.toString(), (float) 120.0);              
+            if(Table.getSelectedRows().length > 1)
+            {
+                PopUp_Factory.show_Message("Select only one word !", "Warning",  Text.getFont().deriveFont(Font.BOLD, 20.0f), this);
+            }
+            else
+            {
+                Object str = Table.getValueAt(Table.getSelectedRow(), 0);
+                tts.say(str.toString(), (float) 120.0);                 
+            }
         } catch (Exception e) 
-        {
-            JLabel lable = new JLabel("Select word from table");            
-            lable.setFont(Text.getFont().deriveFont(Font.BOLD, 20.0f));
-            JOptionPane.showMessageDialog(this, lable, "Warning", JOptionPane.WARNING_MESSAGE);
+        {          
+            PopUp_Factory.show_Message("Select word from table", "Warning", Text.getFont().deriveFont(Font.BOLD, 20.0f), this);
         }      
     }//GEN-LAST:event_AudioMouseClicked
 
@@ -216,13 +248,32 @@ public class Search extends javax.swing.JFrame {
         Swing_Factory.show_Swing(new Menu(), this);
     }//GEN-LAST:event_HomeMouseClicked
 
+    private void ShortcutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ShortcutMouseClicked
+        View_History.conection.setLocation(this.getLocation());
+        View_History.conection.setVisible(true);
+        View_History.conection.load_Table();
+        
+        this.setVisible(false);
+    }//GEN-LAST:event_ShortcutMouseClicked
+
     public static void main(String args[]) 
     {
-        Set_LookAndFeel();
         java.awt.EventQueue.invokeLater(new Runnable() 
         {
             public void run() 
             {
+
+                try {
+                    new View_History().setVisible(false);
+                } catch (FontFormatException ex) {
+                    Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
+                }                   
+                
+                
                 try {
                     new Search().setVisible(true);
                 } catch (FontFormatException ex) {
@@ -231,12 +282,12 @@ public class Search extends javax.swing.JFrame {
                     Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Search.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }                
             }
         });
     }
 
-    private static void Set_LookAndFeel()
+    private void set_LookAndFeel()
     {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -246,34 +297,38 @@ public class Search extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Search.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(View_History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Search.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(View_History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Search.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(View_History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Search.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(View_History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }        
     }
     
     private void Set_GUI() throws FileNotFoundException, FontFormatException, IOException
-    {                
+    {                        
         // Set Font, Icon
         Font font = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("Data\\Font\\ShowcaseSans.ttf"))).deriveFont(Font.PLAIN, 60);
         Text.setFont(font);
         
         Audio.setIcon(new ImageIcon("Data\\Icon\\Audio.png"));
-        Star.setIcon(new ImageIcon("Data\\Icon\\Star.png"));
-        Home.setIcon(new ImageIcon("Data\\Icon\\Home.png"));           
+        Home.setIcon(new ImageIcon("Data\\Icon\\Home.png"));   
+        Shortcut.setIcon(new ImageIcon("Data\\Icon\\Shortcut.png"));
         
         // Add Listener
-         JTextField TextField = (JTextField) Input.getEditor().getEditorComponent();
+         TextField = (JTextField) Input.getEditor().getEditorComponent();
          TextField.addKeyListener(new Auto_Complete(list, Input, Table));
-         TextField.addMouseListener(new Input_MouseListenner(TextField, History_Table));
+         TextField.addMouseListener(new Input_MouseListenner(TextField, History_Table));         
          
-         Menu.setOpaque(false);
-         
-        // SetTable        
+        // SetTable    
+        
+        // Set TableHeader Properties
+        JTableHeader table_header = Table.getTableHeader();
+        table_header.setBorder(new LineBorder(Color.BLACK, 1));
+        table_header.setFont(font.deriveFont(Font.BOLD, 20.0f));        
+        
         // Set Model
         DefaultTableModel dataModel = new DefaultTableModel()
         { 
@@ -341,19 +396,20 @@ public class Search extends javax.swing.JFrame {
         set_History();
         
         // Add Hint
-        Audio.addMouseListener(new Hint(Menu, Audio, "Play Sound", -8, 100));
-        Star.addMouseListener(new Star_MouseListenner(Menu, star_Status));
-        Home.addMouseListener(new Hint(Menu, Home, "Back to home", -17, 100));        
+        Audio.addMouseListener(new Hint(Menu, Audio, "Play Sound", -8, 100, Color.BLACK));
+        Star.addMouseListener(new Star_MouseListenner(Menu, Star));
+        Home.addMouseListener(new Hint(Menu, Home, "Back to home", -17, 100, Color.BLACK));        
+        Shortcut.addMouseListener(new Hint(Menu, Shortcut, "Full View", -5, -2, Color.BLACK));
                
     }    
     
     private  void Get_Data() throws IOException, FileNotFoundException, ClassNotFoundException
     {
         list = new Double_ArrayList((ArrayList<ArrayList<String>>) File_Factory.Input("Data\\Inf\\List.txt")); 
-        list_History = (LinkedHashMap<String, Integer>) File_Factory.Input("Data\\Inf\\History.txt");
+        list_Star = (ArrayList<Integer>) File_Factory.Input("Data\\Inf\\Star.txt");
         tts = new TTS("kevin16");
         
-        conection = this;        
+        conection = this; 
     }
     
     public void set_History()
@@ -383,6 +439,8 @@ public class Search extends javax.swing.JFrame {
         {
             data_Model.addRow(list.Get(location, i).split("-"));
         }
+        
+        set_Start(location);
     }       
     
     // Creat ListSelectionListener for History_Table
@@ -420,16 +478,32 @@ public class Search extends javax.swing.JFrame {
         File_Factory.Output(list_History, "Data\\Inf\\History.txt");
         set_History();
     }
+    
+    private void set_Start(Integer in)    
+    {
+        if(list_Star.contains(in))
+        {
+            star_Status = 2;            
+            Star.setIcon(new ImageIcon("Data\\Icon\\Star.png"));            
+        }
+        else
+        {
+            star_Status = 1;
+            Star.setIcon(new ImageIcon("Data\\Icon\\Unstar.png"));            
+        }
+        star_Location = in;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Audio;
     private javax.swing.JTable History_Table;
     private javax.swing.JLabel Home;
     private javax.swing.JComboBox<String> Input;
     private javax.swing.JScrollPane ScrollPane;
-    private javax.swing.JLabel Star;
+    private javax.swing.JLabel Shortcut;
+    public javax.swing.JLabel Star;
     private javax.swing.JTable Table;
     private javax.swing.JLabel Text;
-    private javax.swing.JLabel Text_2;
+    private javax.swing.JLabel Text_3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane_History;
     // End of variables declaration//GEN-END:variables

@@ -4,6 +4,7 @@ import IO.File_Factory;
 import IO.Swing_Factory;
 import Model.Key_Listener.History_Table;
 import Model.Mouse_Listenner.Hint;
+import Model.PopUp_Factory;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,8 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,9 +28,9 @@ import javax.swing.table.JTableHeader;
 
 public class View_History extends javax.swing.JFrame 
 {
-    public static LinkedHashMap<String, Integer> list;
+    public static LinkedHashMap<String, Integer> list_History;
     public static View_History conection;
-    public static JPopupMenu Menu = new JPopupMenu();
+    public static JPopupMenu Menu_his = new JPopupMenu();
 
     public View_History() throws FontFormatException, IOException, FileNotFoundException, ClassNotFoundException
     {
@@ -39,7 +38,6 @@ public class View_History extends javax.swing.JFrame
         set_LookAndFeel();
         set_GUI();
         input_Data();
-        load_Table();
     }
     
     @SuppressWarnings("unchecked")
@@ -151,13 +149,12 @@ public class View_History extends javax.swing.JFrame
     }//GEN-LAST:event_HomeMouseClicked
 
     private void HelpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HelpMouseClicked
-        JLabel lable = new JLabel("<html>\"Delete\": Delete that Word\n" + "<br>" +"\"Ctrl + O\": Search that Word </html>");
-        lable.setFont(title.getFont().deriveFont(Font.BOLD, 20.0f));
-        JOptionPane.showMessageDialog(this, lable, "Help", JOptionPane.PLAIN_MESSAGE, null);
+        String text = "<html>\"Delete\": Delete that Word\n" + "<br>" +"\"Ctrl + O\": Search that Word </html>";
+        PopUp_Factory.show_Message(text,"Help", title.getFont().deriveFont(Font.BOLD, 20.0f), this);
     }//GEN-LAST:event_HelpMouseClicked
 
     public static void main(String args[]) 
-    {        
+    {           
         java.awt.EventQueue.invokeLater(new Runnable() 
         {
             public void run() 
@@ -192,13 +189,12 @@ public class View_History extends javax.swing.JFrame
             java.util.logging.Logger.getLogger(View_History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(View_History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }        
+        }          
     }
-    
-    private void set_GUI() throws FileNotFoundException, FontFormatException, IOException
-    {
-        Menu.setOpaque(false);
         
+    private void set_GUI() throws FileNotFoundException, FontFormatException, IOException
+    {        
+        Menu_his.setOpaque(false);
         // Set font and Icon
         Font font_1 = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("Data\\Font\\ShowcaseSans.ttf"))).deriveFont(Font.PLAIN, 45);
         title.setFont(font_1);             
@@ -241,20 +237,20 @@ public class View_History extends javax.swing.JFrame
         table_header.setFont(font_1.deriveFont(Font.BOLD, 20.0f));
         
         // Add Listenner
-        Home.addMouseListener(new Hint(Menu, Home, "Back to home", -17, 100));
-        Help.addMouseListener(new Hint(Menu, Help, "Help", 20, 100));
+        Home.addMouseListener(new Hint(Menu_his, Home, "Back to home", -17, 100, Color.BLACK));
+        Help.addMouseListener(new Hint(Menu_his, Help, "Help", 20, 100, Color.BLACK));
         table.addKeyListener(new History_Table(table));
     }
     
     private void input_Data() throws IOException, FileNotFoundException, ClassNotFoundException
     {
-        list = (LinkedHashMap<String, Integer>) File_Factory.Input("Data\\Inf\\History.txt");           
+        list_History = (LinkedHashMap<String, Integer>) File_Factory.Input("Data\\Inf\\History.txt");           
         conection = this;
     }
     
     public void load_Table()
     {
-        Object[] list_Key = list.keySet().toArray();
+        Object[] list_Key = list_History.keySet().toArray();
         DefaultTableModel data_Model = (DefaultTableModel) table.getModel();
         data_Model.setRowCount(0);
         if(list_Key.length > 0)
@@ -262,7 +258,7 @@ public class View_History extends javax.swing.JFrame
             for(int i = list_Key.length - 1; i >= 0; i--)
             {
                 String word = list_Key[i].toString();
-                String[] str = {word, list.get(word).toString()};                
+                String[] str = {word, list_History.get(word).toString()};                
                 data_Model.addRow(str);
             }           
         } 

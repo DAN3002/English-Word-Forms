@@ -12,8 +12,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import static GUI.Search.list_History;
-import IO.File_Factory;
 import Model.Double_ArrayList;
 
 public class Auto_Complete extends KeyAdapter
@@ -103,7 +101,8 @@ public class Auto_Complete extends KeyAdapter
             Search.conection.load_Table(list.IndexOf(text_field.getText()));  
             Search.conection.add_History(text_field.getText());
         }        
-        jcombo.hidePopup();        
+        jcombo.hidePopup();    
+        text_field.setText("");
     }
         
     // History

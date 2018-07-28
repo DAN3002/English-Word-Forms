@@ -4,7 +4,7 @@ import GUI.Search;
 import GUI.View_History;
 import java.awt.event.KeyAdapter;
 import javax.swing.JTable;
-import static GUI.View_History.list;
+import static GUI.View_History.list_History;
 import IO.File_Factory;
 import Model.PopUp_Factory;
 import java.awt.FontFormatException;
@@ -61,9 +61,9 @@ public class History_Table extends KeyAdapter
             for(int i : seletion)
             {
                 String key = (String) table.getValueAt(i, 0);
-                list.remove(key);
+                list_History.remove(key);
             }
-            File_Factory.Output(list, "Data\\Inf\\History.txt");
+            File_Factory.Output(list_History, "Data\\Inf\\History.txt");
             View_History.conection.load_Table();
         }
     }
@@ -73,14 +73,13 @@ public class History_Table extends KeyAdapter
         int[] selection = this.table.getSelectedRows();
         if(selection.length == 1)
         {
-            View_History.conection.dispose();
-            Search Jf = new Search();
-            Jf.setVisible(true);
-            Jf.Menu.setOpaque(false);
-            Jf.setLocation(View_History.conection.getLocation());
+            Search.conection.setLocation(View_History.conection.getLocation());
+            Search.conection.setVisible(true);
             String str = (String) table.getValueAt(selection[0], 0);
-            Jf.conection.load_Table(Jf.list.IndexOf(str));     
-            Jf.conection.add_History(str);
+            Search.conection.load_Table(Search.conection.list.IndexOf(str));
+            Search.conection.add_History(str);
+            Search.conection.TextField.setText("");
+            View_History.conection.dispose();
         }
         else
         {

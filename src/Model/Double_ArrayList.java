@@ -1,14 +1,21 @@
 package Model;
 
+import IO.File_Factory;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Double_ArrayList
 {
-    private  ArrayList<ArrayList<String>> arr;
+    private ArrayList<ArrayList<String>> arr;
+    private HashMap<String, Integer> list_Location;
     
-    public Double_ArrayList(ArrayList<ArrayList<String>> input)
+    public Double_ArrayList(ArrayList<ArrayList<String>> input) throws IOException, FileNotFoundException, ClassNotFoundException
     {
         this.arr = input;
+        this.list_Location = (HashMap<String, Integer>) File_Factory.Input("Data\\Inf\\Location.txt");
     }
     
     public void Add(int column, String  index)
@@ -51,19 +58,30 @@ public class Double_ArrayList
     
     public int IndexOf(String str)
     {
-        int output = -1;       
-        for(int i = 0; i < Total_Size(); i++)
+        int output = -1;                                
+        ArrayList<String> s = new ArrayList<String>();
+        Collections.addAll(s, "Ably", "Ability", "Enable");
+        
+        if(s.contains(str))
         {
-            for(int j = 0; j < Column_Size(i); j++)
+            output = 0;
+        }
+        else
+        {
+            for(int i = list_Location.get(str.charAt(0) + ""); i < Total_Size(); i ++)
             {
-                String[] cut = Get(i, j).split("-");
-                if(cut[0].equals(str))
+                for(int j = 0; j < Column_Size(i); j++)
                 {
-                    output = i;
-                    break;
+                    String text = (Get(i, j).split("-"))[0];
+                    if(str.equals(text))
+                    {
+                        output = i;
+                        break;
+                    }
                 }
             }
         }
+        
         return output;
     }
 }
